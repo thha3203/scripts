@@ -54,21 +54,42 @@ local function tweenTo(position, time)
     tween.Completed:Wait()
 end
 
--- Auto Farm loop with fast attack and dodge
 task.spawn(function()
-    Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-    Humanoid = Character:WaitForChild("Humanoid")
+    while task.wait(settings.delay) do
+        if not settings.enabled then continue end
 
-    local target = getTarget()
-    if target then
-        local humanoid = target:FindFirstChildOfClass("Humanoid")
-        if humanoid and humanoid.Health > 0 then
-            tweenTo(target:GetPivot().Position, settings.tween_time)
+        Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+        Humanoid = Character:WaitForChild("Humanoid")
+
+        local target = getTarget()
+        if target then
+            local humanoid = target:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.Health > 0 then
+                -- tweenTo(target:GetPivot().Position, settings.tween_time)
+                print(target:GetPivot().Position)
+            end
+        else
+            -- No target, optionally move to a neutral position or idle
         end
-    else
-        -- No target, optionally move to a neutral position or idle
     end
-
-    print("finished")
 end)
+
+-- -- Auto Farm loop with fast attack and dodge
+-- task.spawn(function()
+--     Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+--     HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+--     Humanoid = Character:WaitForChild("Humanoid")
+
+--     local target = getTarget()
+--     if target then
+--         local humanoid = target:FindFirstChildOfClass("Humanoid")
+--         if humanoid and humanoid.Health > 0 then
+--             tweenTo(target:GetPivot().Position, settings.tween_time)
+--         end
+--     else
+--         -- No target, optionally move to a neutral position or idle
+--     end
+
+--     print("finished")
+-- end)
