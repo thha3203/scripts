@@ -69,4 +69,6 @@ task.spawn(function()
     else
         -- No target, optionally move to a neutral position or idle
     end
+
+    print("finished")
 end)
