@@ -8,6 +8,21 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- GUI
+local gui = Instance.new("ScreenGui", PlayerGui)
+gui.Name = "KillAuraGui"
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 250, 0, 60)
+button.Position = UDim2.new(0, 30, 0, 30)
+button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 22
+button.Text = "Kill Aura: OFF"
+button.Parent = gui
 
 -- Improved Settings
 local settings = {
@@ -20,6 +35,12 @@ local settings = {
     dodge_cooldown = 0,       -- Cooldown between dodges
     last_dodge = 0
 }
+
+button.MouseButton1Click:Connect(function()
+    settings.enabled = not settings.enabled
+    button.Text = "Kill Aura: " .. (settings.enabled and "ON" or "OFF")
+    print("Aura Toggled: " .. tostring(settings.enabled))
+end)
 
 local function getTarget()
     local bestTarget = nil
