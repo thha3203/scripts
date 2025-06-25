@@ -1,3 +1,5 @@
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/thha3203/scripts/refs/heads/main/pixel-blade.lua"))()
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
@@ -142,7 +144,7 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
 	end
 end)
 
-local isMinimized = false
+local isMinimized = true
 icon.MouseButton1Click:Connect(function()
 	isMinimized = not isMinimized
 	Window:Minimize(isMinimized)
