@@ -144,7 +144,7 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
 	end
 end)
 
-local isMinimized = true
+local isMinimized = false
 icon.MouseButton1Click:Connect(function()
 	isMinimized = not isMinimized
 	Window:Minimize(isMinimized)
@@ -811,3 +811,5 @@ Fluent:Notify({
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
+
+Window:Minimize(true)
