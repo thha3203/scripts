@@ -725,7 +725,7 @@ end)
                 true
             }
             game:GetService("ReplicatedStorage"):WaitForChild("remotes"):WaitForChild("playerTP"):FireServer(unpack(args))
-            task.wait(0.3)
+            task.wait(5)
         end
     end)
     
