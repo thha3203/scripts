@@ -392,7 +392,7 @@ end)
                     amount = 1
                 }
             }
-            game:GetService("ReplicatedStorage"):WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(args))
+            replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(args))
             task.spawn(function()
                 while goto_closest do
                     local char = local_player.Character
@@ -488,7 +488,7 @@ end)
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
-                                game:GetService("ReplicatedStorage"):WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
+                                replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
                             end
                         end
                         if velocity_connection then
