@@ -33,8 +33,10 @@ local Remotes = ReplicatedStorage:WaitForChild("remotes")
 local SwingRemote = Remotes:WaitForChild("swing")
 local OnHitRemote = Remotes:WaitForChild("onHit")
 local AbilityEventRemote = Remotes:WaitForChild("abilityEvent")
-local OpenLootRemote = Remotes:WaitForChild("openLoot")
 local PlayerTPRemote = Remotes:WaitForChild("playerTP")
+
+-- Optional remotes (may not exist in all game versions)
+local OpenLootRemote = Remotes:FindFirstChild("openLoot")
 
 -- Script State Variables
 local GotoClosest = false
@@ -503,8 +505,12 @@ AutoChestToggle:OnChanged(function(Value)
                 local chest = LocalPlayer.PlayerGui.gameUI.armory.inventory.clip.Loot
                 for _, loot in pairs(chest:GetChildren()) do
                     if string.find(loot.Name, "Chest") then
-                        local args = { loot.Name }
-                        OpenLootRemote:InvokeServer(unpack(args))
+                        if OpenLootRemote then
+                            local args = { loot.Name }
+                            OpenLootRemote:InvokeServer(unpack(args))
+                        else
+                            warn("OpenLoot remote not found - chest opening not available")
+                        end
                     end
                 end
                 task.wait(0.1)
