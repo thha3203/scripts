@@ -33,10 +33,10 @@ local Remotes = ReplicatedStorage:WaitForChild("remotes")
 local SwingRemote = Remotes:WaitForChild("swing")
 local OnHitRemote = Remotes:WaitForChild("onHit")
 local AbilityEventRemote = Remotes:WaitForChild("abilityEvent")
-local PlayerTPRemote = Remotes:WaitForChild("playerTP")
 
 -- Optional remotes (may not exist in all game versions)
 local OpenLootRemote = Remotes:FindFirstChild("openLoot")
+local PlayerTPRemote = Remotes:FindFirstChild("playerTP")
 
 -- Script State Variables
 local GotoClosest = false
@@ -555,12 +555,16 @@ AutoPortalToggle:OnChanged(function(Value)
     if Value then
         task.spawn(function()
             while Options.AutoPortal.Value do
-                local args = {
-                    selectedDungeon,
-                    selectedDifficulty,
-                    true
-                }
-                PlayerTPRemote:FireServer(unpack(args))
+                if PlayerTPRemote then
+                    local args = {
+                        selectedDungeon,
+                        selectedDifficulty,
+                        true
+                    }
+                    PlayerTPRemote:FireServer(unpack(args))
+                else
+                    warn("PlayerTP remote not found - auto portal joining not available")
+                end
                 task.wait(5)
             end
         end)
