@@ -179,7 +179,7 @@ local function TeleportToWave()
     end
 end
 
--- Teleport to mob with delay
+-- Teleport to mob with positioning delay
 local function TeleportToMob(mob)
     local character = LocalPlayer.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") or not mob then return end
@@ -189,7 +189,7 @@ local function TeleportToMob(mob)
     local targetPosition = mobPosition + mob:GetPivot().LookVector * -8
     
     hrp.CFrame = CFrame.lookAt(targetPosition, mobPosition)
-    task.wait(2)  -- Always wait 2 seconds after teleporting to a mob
+    task.wait(0.25)  -- Wait 0.25 seconds after teleporting to position
 end
 
 -- ==================== LOADING SCREEN ====================
@@ -291,7 +291,7 @@ local function KillAuraAutoFarm()
                         end
                     end)
 
-                    -- Teleport to mob (includes 2 second delay)
+                    -- Teleport to mob (includes 0.25 second positioning delay)
                     TeleportToMob(mob)
                     
                     -- Attack the mob until it's dead
@@ -311,10 +311,12 @@ local function KillAuraAutoFarm()
                                 {}, 
                                 0
                             )
+                            -- Wait 2 seconds after attacking
+                            task.wait(2)
                         end
                         
-                        task.wait(0.5)
                         ApplyHealing()
+                        task.wait(0.1)  -- Small loop delay
                     end
                     
                     if velocityConnection then
