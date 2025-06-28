@@ -332,11 +332,11 @@ end)
                 local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
                 local name = v.Name
 
-                -- OPTIONAL: Anchor the mob
-                local hum = v:FindFirstChild("HumanoidRootPart")
-                if hum then
-                    hum.Anchored = true
-                end
+                -- -- OPTIONAL: Anchor the mob
+                -- local hum = v:FindFirstChild("HumanoidRootPart")
+                -- if hum then
+                --     hum.Anchored = true
+                -- end
 
                 -- Prioritize Archer/Mage ONLY if within 80 studs
                 for _, keyword in ipairs(priority_keywords) do
