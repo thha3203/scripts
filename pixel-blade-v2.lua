@@ -34,10 +34,6 @@ local SwingRemote = Remotes:WaitForChild("swing")
 local OnHitRemote = Remotes:WaitForChild("onHit")
 local AbilityEventRemote = Remotes:WaitForChild("abilityEvent")
 
--- Optional remotes (may not exist in all game versions)
-local OpenLootRemote = Remotes:FindFirstChild("openLoot")
-local PlayerTPRemote = Remotes:FindFirstChild("playerTP")
-
 -- Script State Variables
 local GotoClosest = false
 local TransitionDelay = 2
@@ -505,9 +501,10 @@ AutoChestToggle:OnChanged(function(Value)
                 local chest = LocalPlayer.PlayerGui.gameUI.armory.inventory.clip.Loot
                 for _, loot in pairs(chest:GetChildren()) do
                     if string.find(loot.Name, "Chest") then
-                        if OpenLootRemote then
+                        local openLootRemote = Remotes:FindFirstChild("openLoot")
+                        if openLootRemote then
                             local args = { loot.Name }
-                            OpenLootRemote:InvokeServer(unpack(args))
+                            openLootRemote:InvokeServer(unpack(args))
                         else
                             warn("OpenLoot remote not found - chest opening not available")
                         end
@@ -555,13 +552,14 @@ AutoPortalToggle:OnChanged(function(Value)
     if Value then
         task.spawn(function()
             while Options.AutoPortal.Value do
-                if PlayerTPRemote then
+                local playerTPRemote = Remotes:FindFirstChild("playerTP")
+                if playerTPRemote then
                     local args = {
                         selectedDungeon,
                         selectedDifficulty,
                         true
                     }
-                    PlayerTPRemote:FireServer(unpack(args))
+                    playerTPRemote:FireServer(unpack(args))
                 else
                     warn("PlayerTP remote not found - auto portal joining not available")
                 end
