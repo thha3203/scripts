@@ -179,6 +179,19 @@ local function TeleportToWave()
     end
 end
 
+-- Teleport to mob with delay
+local function TeleportToMob(mob)
+    local character = LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") or not mob then return end
+    
+    local hrp = character.HumanoidRootPart
+    local mobPosition = mob.HumanoidRootPart.Position
+    local targetPosition = mobPosition + mob:GetPivot().LookVector * -8
+    
+    hrp.CFrame = CFrame.lookAt(targetPosition, mobPosition)
+    task.wait(2)  -- Always wait 2 seconds after teleporting to a mob
+end
+
 -- ==================== LOADING SCREEN ====================
 local function CreateLoadingScreen()
     local blur = Instance.new("BlurEffect", Lighting)
@@ -278,6 +291,10 @@ local function KillAuraAutoFarm()
                         end
                     end)
 
+                    -- Teleport to mob (includes 2 second delay)
+                    TeleportToMob(mob)
+                    
+                    -- Attack the mob until it's dead
                     while mob 
                         and mob:FindFirstChild("Humanoid") 
                         and mob.Humanoid.Health > 0 
@@ -294,9 +311,6 @@ local function KillAuraAutoFarm()
                                 {}, 
                                 0
                             )
-                        else
-                            local targetPosition = mobPosition + mob:GetPivot().LookVector * -8
-                            hrp.CFrame = CFrame.lookAt(targetPosition, mobPosition)
                         end
                         
                         task.wait(0.5)
