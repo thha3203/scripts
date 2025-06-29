@@ -496,7 +496,7 @@ do
     local selected_dungeon = "Grasslands"
     local dungeons = Tabs.Portal:AddDropdown("dungeons", {
         Title = "Select Portal",
-        Values = {"Grasslands"},
+        Values = {"Grasslands", "AncientSands"},
         Multi = false,
         Default = 1,
     })
