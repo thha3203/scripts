@@ -226,6 +226,28 @@ function Features.Farming.init(tab, options, shared)
 		return damage
 	end
 
+	local function is_mob_alive(mob)
+		if not mob then return false end
+		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
+		if is_ancient_sands and mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") then
+			return mob.worm.Health.Value > 0
+		elseif mob:FindFirstChild("Humanoid") then
+			return mob.Humanoid.Health > 0
+		end
+		return false
+	end
+
+	local function get_mob_targetable_object(mob)
+		if not mob then return nil end
+		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
+		if is_ancient_sands and mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") then
+			return mob.worm
+		elseif mob:FindFirstChild("Humanoid") then
+			return mob.Humanoid
+		end
+		return nil
+	end
+
 	local function closest_mob()
 		local character = local_player.Character
 		if not character then return nil end
@@ -236,28 +258,44 @@ function Features.Farming.init(tab, options, shared)
 		local closest_mob = nil
 		local closest_distance = math.huge
 		local max_priority_distance = 80
+		
+		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
 
 		for _, v in next, workspace:GetChildren() do
 			local has_hadEntrance = v:GetAttribute("hadEntrance") ~= nil
-			if v ~= character and v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and has_hadEntrance then
-				local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
-				local name = v.Name
-				local hum = v:FindFirstChild("HumanoidRootPart")
-				if hum then hum.Anchored = true end
+			if v ~= character and v:IsA("Model") and has_hadEntrance then
+				local is_regular_mob = v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0
+				local is_maneater_boss = is_ancient_sands and v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0
+				
+				if is_regular_mob or is_maneater_boss then
+					local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
+					local name = v.Name
+					local hum = v:FindFirstChild("HumanoidRootPart")
+					if hum then hum.Anchored = true end
 
-				for _, keyword in ipairs(priority_keywords) do
-					if string.find(name, keyword) and dist <= max_priority_distance then
+					local is_priority_target = false
+					if is_maneater_boss then
+						is_priority_target = true
+					else
+						for _, keyword in ipairs(priority_keywords) do
+							if string.find(name, keyword) and dist <= max_priority_distance then
+								is_priority_target = true
+								break
+							end
+						end
+					end
+					
+					if is_priority_target then
 						if dist < closest_priority_distance then
 							closest_priority_distance = dist
 							closest_priority_mob = v
 						end
-						break
+					else
+						if dist < closest_distance then
+							closest_distance = dist
+							closest_mob = v
+						end
 					end
-				end
-
-				if dist < closest_distance then
-					closest_distance = dist
-					closest_mob = v
 				end
 			end
 		end
@@ -314,16 +352,17 @@ function Features.Farming.init(tab, options, shared)
 						if cutscene and cutscene.Value == false and mob then
 							local hrp = char:FindFirstChild("HumanoidRootPart")
 							if hrp then
-								local mob_position = mob.HumanoidRootPart.Position
+								local mob_position = mob:GetPivot().Position
 								local total_distance = (mob_position - hrp.Position).Magnitude
 								if total_distance > 70 then task.wait(transdelay) end
 
 								shouldZeroVelocity = true 
-								while mob and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and goto_closest do
-									mob_position = mob.HumanoidRootPart.Position
+								local mob_targetable_part = get_mob_targetable_object(mob)
+								while mob and mob_targetable_part and is_mob_alive(mob) and goto_closest do
+									mob_position = mob:GetPivot().Position
 									if (mob_position - hrp.Position).Magnitude < 10 then
 										replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob_targetable_part, current_damage(), {}, 0)
 									else
 										local target_position = mob_position + mob:GetPivot().LookVector * -8
 										hrp.CFrame = CFrame.lookAt(target_position, mob_position)
@@ -391,16 +430,27 @@ function Features.Portal.init(tab, options, shared)
 	local replicated_storage = shared.replicated_storage
 	local selected_dungeon = "Grasslands"
 	local selected_difficulties = "Normal"
+	local all_difficulties = {"Normal", "Heroic", "Nightmare"}
+	local sands_difficulties = {"Normal", "Heroic"}
+
+	local difficultyDropdown = tab:AddDropdown("difficulties", {
+		Title = "Choose Difficulty", Values = all_difficulties, Multi = false, Default = 1,
+		Callback = function(value) selected_difficulties = value end
+	})
+	difficultyDropdown:SetValue("Normal")
 
 	tab:AddDropdown("dungeons", {
-		Title = "Select Portal", Values = {"Grasslands"}, Multi = false, Default = 1,
-		Callback = function(value) selected_dungeon = value end
+		Title = "Select Portal", Values = {"Grasslands", "AncientSands"}, Multi = false, Default = 1,
+		Callback = function(value) 
+			selected_dungeon = value 
+			if value == "AncientSands" then
+				difficultyDropdown:SetValues(sands_difficulties)
+				difficultyDropdown:SetValue("Normal")
+			else
+				difficultyDropdown:SetValues(all_difficulties)
+			end
+		end
 	}):SetValue("Grasslands")
-
-	tab:AddDropdown("difficulties", {
-		Title = "Choose Difficulty", Values = {"Normal", "Heroic", "Nightmare"}, Multi = false, Default = 1,
-		Callback = function(value) selected_difficulties = value end
-	}):SetValue("Normal")
 
 	local autoJoinPortalToggle = tab:AddToggle("AutoJoinPortal", {Title = "Auto Join Portal", Default = false })
 	autoJoinPortalToggle:OnChanged(function(value)
