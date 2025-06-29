@@ -332,11 +332,11 @@ end)
                 local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
                 local name = v.Name
 
-                -- -- OPTIONAL: Anchor the mob
-                -- local hum = v:FindFirstChild("HumanoidRootPart")
-                -- if hum then
-                --     hum.Anchored = true
-                -- end
+                -- OPTIONAL: Anchor the mob
+                local hum = v:FindFirstChild("HumanoidRootPart")
+                if hum then
+                    hum.Anchored = true
+                end
 
                 -- Prioritize Archer/Mage ONLY if within 80 studs
                 for _, keyword in ipairs(priority_keywords) do
@@ -422,30 +422,7 @@ end)
                         task.wait(2)
                         char.HumanoidRootPart.CFrame = CFrame.new(nine:GetPivot().Position + Vector3.new(0, 5, 0))
                     end
-                    --[[
-                    local function noEnemyModelsExist()
-                        local forbiddenNames = {
-                            ["Bolt"] = true,
-                            ["Cannon"] = true,
-                            ["CannonGoblin"] = true,
-                            ["Giant"] = true,
-                            ["Mage"] = true
-                        }
-                        for _, v in pairs(workspace:GetChildren()) do
-                            if v:IsA("Model") and forbiddenNames[v.Name] then
-                                return false
-                            end
-                        end
-                        return true
-                    end
 
-                    if twenty and bossroom and noEnemyModelsExist() then
-                        local char = local_player.Character
-                        if char and char:FindFirstChild("HumanoidRootPart") then
-                            char.HumanoidRootPart.CFrame = bossroom:GetPivot()
-                        end
-                    end
-                    ]]
                     -- Auto Farm + Kill Aura logic
                     local cutscene = workspace:FindFirstChild("inCutscene")
                     local mob = closest_mob()

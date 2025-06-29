@@ -14,18 +14,18 @@
 
 -- ==================== SERVICES ====================
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local TweenService = cloneref(game:GetService("TweenService"))
 local Lighting = game:GetService("Lighting")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local RunService = cloneref(game:GetService("RunService"))
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local VirtualUser = game:GetService("VirtualUser")
 local MarketplaceService = game:GetService("MarketplaceService")
-local Workspace = game:GetService("Workspace")
+local Workspace = cloneref(game:GetService("Workspace"))
 
 -- ==================== VARIABLES ====================
-local LocalPlayer = Players.LocalPlayer
+local LocalPlayer = cloneref(Players.LocalPlayer)
 local PlayerStats = require(LocalPlayer:FindFirstChild("plrStats"))
 
 -- Cached Remotes for Performance
@@ -126,6 +126,12 @@ local function FindClosestMob()
             local distance = (mob:GetPivot().Position - playerPosition).Magnitude
             local mobName = mob.Name
             
+            -- OPTIONAL: Anchor the mob
+            local hum = mob:FindFirstChild("HumanoidRootPart")
+            if hum then
+                hum.Anchored = true
+            end
+            
             -- Check for priority mobs
             for _, keyword in ipairs(priorityKeywords) do
                 if string.find(mobName, keyword) and distance <= maxPriorityDistance then
@@ -148,8 +154,8 @@ local function FindClosestMob()
     return wormBoss or closestPriorityMob or closestMob
 end
 
--- Get appropriate wave target based on difficulty
-local function GetWaveTarget()
+-- Get appropriate resting wave based on difficulty
+local function GetRestingWave()
     local difficulty = Workspace.difficulty.Value
     local waveTargets = {
         Normal = Workspace:FindFirstChild("7"),
@@ -159,15 +165,31 @@ local function GetWaveTarget()
     return waveTargets[difficulty]
 end
 
--- Teleport to wave position
-local function TeleportToWave()
+-- Teleport to resting wave position
+local function TeleportToRestingWave()
     local character = LocalPlayer.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
     
-    local target = GetWaveTarget()
-    local kingslayer = Workspace:FindFirstChild("LumberJack")
+    local target = GetRestingWave()
+    local difficulty = Workspace.difficulty.Value
+    local lumberjack = Workspace:FindFirstChild("LumberJack")
     
-    if target and not kingslayer and target:IsA("Model") then
+    local canTeleport = false
+    if difficulty == "Normal" then
+        local wave6 = Workspace:FindFirstChild("6")
+        local wave7 = Workspace:FindFirstChild("7")
+        canTeleport = wave6 and wave7
+    elseif difficulty == "Heroic" then
+        local wave7 = Workspace:FindFirstChild("7")
+        local wave8 = Workspace:FindFirstChild("8")
+        canTeleport = wave7 and wave8
+    elseif difficulty == "Nightmare" then
+        local wave8 = Workspace:FindFirstChild("8")
+        local wave9 = Workspace:FindFirstChild("9")
+        canTeleport = wave8 and wave9
+    end
+    
+    if target and canTeleport and not lumberjack and target:IsA("Model") then
         local success, result = pcall(function()
             local position = target:GetPivot().Position + Vector3.new(0, 5, 0)
             character.HumanoidRootPart.CFrame = CFrame.new(position)
@@ -179,7 +201,7 @@ local function TeleportToWave()
     end
 end
 
--- Teleport to mob with positioning delay
+-- Teleport to mob with positioning
 local function TeleportToMob(mob)
     local character = LocalPlayer.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") or not mob then return end
@@ -189,7 +211,6 @@ local function TeleportToMob(mob)
     local targetPosition = mobPosition + mob:GetPivot().LookVector * -8
     
     hrp.CFrame = CFrame.lookAt(targetPosition, mobPosition)
-    task.wait(0.25)  -- Wait 0.25 seconds after teleporting to position
 end
 
 -- ==================== LOADING SCREEN ====================
@@ -275,53 +296,51 @@ local function KillAuraAutoFarm()
                 DisableCollision(character)
             end
             
-            TeleportToWave()
+            TeleportToRestingWave()
 
+            -- Auto Farm + Kill Aura logic
             local cutscene = Workspace:FindFirstChild("inCutscene")
             local mob = FindClosestMob()
 
             if cutscene and cutscene.Value == false and mob then
                 local hrp = character and character:FindFirstChild("HumanoidRootPart")
+                local velocityConnection = RunService.Heartbeat:Connect(function()
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+                        LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+                    end
+                end)
                 
                 if hrp then
-                    local velocityConnection = RunService.Heartbeat:Connect(function()
-                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                            LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
-                            LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
-                        end
-                    end)
+                    local mobPosition = mob.HumanoidRootPart.Position
+                    local totalDistance = (mobPosition - hrp.Position).Magnitude
+                    if totalDistance > 70 then
+                        task.wait(TransitionDelay)
+                    end
 
-                    -- Teleport to mob (includes 0.25 second positioning delay)
-                    TeleportToMob(mob)
-                    
-                    -- Attack the mob until it's dead
+                    -- Engage in combat
                     while mob 
                         and mob:FindFirstChild("Humanoid") 
                         and mob.Humanoid.Health > 0 
                         and GotoClosest
                     do
-                        local mobPosition = mob.HumanoidRootPart.Position
+                        mobPosition = mob.HumanoidRootPart.Position
                         local distance = (mobPosition - hrp.Position).Magnitude
                         
                         if distance < 10 then
                             SwingRemote:FireServer()
-                            OnHitRemote:FireServer(
-                                mob.Humanoid, 
-                                GetCurrentDamage(), 
-                                {}, 
-                                0
-                            )
-                            -- Wait 2 seconds after attacking
-                            task.wait(2)
+                            OnHitRemote:FireServer(mob.Humanoid, GetCurrentDamage(), {}, 0)
+                        else
+                            local targetPosition = mobPosition + mob:GetPivot().LookVector * -8
+                            hrp.CFrame = CFrame.lookAt(targetPosition, mobPosition)
                         end
-                        
+                        task.wait(0.5)
                         ApplyHealing()
-                        task.wait(0.1)  -- Small loop delay
                     end
-                    
-                    if velocityConnection then
-                        velocityConnection:Disconnect()
-                    end
+                end
+                
+                if velocityConnection then
+                    velocityConnection:Disconnect()
                 end
             end
             task.wait(0.1)
@@ -629,7 +648,7 @@ SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({})
 
 InterfaceManager:SetFolder("FluentScriptHub")
-SaveManager:SetFolder("FluentScriptHub/Pixel Blade v2")
+SaveManager:SetFolder("FluentScriptHub/Pixel Blade")
 
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
@@ -644,12 +663,7 @@ Fluent:Notify({
 
 task.wait(3)
 
-Fluent:Notify({
-    Title = "Queue Hub v2.0",
-    Content = "Join the discord for updates and keyless scripts",
-    Duration = 8
-})
-
 SaveManager:LoadAutoloadConfig()
+
 task.wait(2)
 Window:Minimize(true) 
