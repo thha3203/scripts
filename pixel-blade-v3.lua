@@ -256,7 +256,7 @@ do
                     closest_distance = dist
                     closest_mob = v
                 end
-            elseif v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0 then
+            elseif v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0 and has_hadEntrance then
                 local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
                 if dist < closest_distance then
                     closest_distance = dist
