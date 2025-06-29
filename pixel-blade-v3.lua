@@ -356,17 +356,20 @@ do
                             end
 
                             -- Engage in combat
-                            while mob and ((mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0) or (mob:FindFirstChild("worm") and mob.worm.Health.Value > 0)) and goto_closest
-                            do
-                                mob_position = mob.HumanoidRootPart.Position
-                                local dist = (mob_position - hrp.Position).Magnitude
-                                print(dist)
-                                if dist < 10 then
-                                    replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                                    replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
-                                else
-                                    local target_position = mob_position + mob:GetPivot().LookVector * -8
-                                    hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+                            while mob do
+                                if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and goto_closest then
+                                    mob_position = mob.HumanoidRootPart.Position
+                                    local dist = (mob_position - hrp.Position).Magnitude
+                                    if dist < 10 then
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+                                    else
+                                        local target_position = mob_position + mob:GetPivot().LookVector * -8
+                                        hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+                                    end
+                                end
+                                if mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") and mob.worm.Health.Value > 0 then
+                                    print(mob.Name)
                                 end
                                 task.wait(0.5)
                                 replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
