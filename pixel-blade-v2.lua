@@ -175,22 +175,7 @@ local function TeleportToRestingWave()
     local difficulty = Workspace.difficulty.Value
     local lumberjack = Workspace:FindFirstChild("LumberJack")
     
-    local canTeleport = false
-    if difficulty == "Normal" then
-        local wave6 = Workspace:FindFirstChild("6")
-        local wave7 = Workspace:FindFirstChild("7")
-        canTeleport = wave6 and wave7
-    elseif difficulty == "Heroic" then
-        local wave7 = Workspace:FindFirstChild("7")
-        local wave8 = Workspace:FindFirstChild("8")
-        canTeleport = wave7 and wave8
-    elseif difficulty == "Nightmare" then
-        local wave8 = Workspace:FindFirstChild("8")
-        local wave9 = Workspace:FindFirstChild("9")
-        canTeleport = wave8 and wave9
-    end
-    
-    if target and canTeleport and not lumberjack then
+    if target and not lumberjack and target:IsA("Model") then
         local success, result = pcall(function()
             local position = target:GetPivot().Position + Vector3.new(0, 5, 0)
             character.HumanoidRootPart.CFrame = CFrame.new(position)
@@ -299,7 +284,6 @@ local function KillAuraAutoFarm()
             
             if GetRestingWave() then
                 TeleportToRestingWave()
-                task.wait(TransitionDelay)
             end
 
             -- Auto Farm + Kill Aura logic
