@@ -297,13 +297,13 @@ function Features.Farming.init(tab, options, shared)
 							if part:IsA("BasePart") then part.CanCollide = false end
 						end
 					
-						if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("6") and workspace:FindFirstChild("7") and not workspace:FindFirstChild("LumberJack") then
+						if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("7") and not workspace:FindFirstChild("LumberJack") then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("7"):GetPivot().Position + Vector3.new(0, 5, 0))
-						elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("7") and workspace:FindFirstChild("8") and not workspace:FindFirstChild("LumberJack") then
+						elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("8") and not workspace:FindFirstChild("LumberJack") then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("8"):GetPivot().Position + Vector3.new(0, 5, 0))
-						elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("8") and workspace:FindFirstChild("9") and not workspace:FindFirstChild("LumberJack") then
+						elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("9") and not workspace:FindFirstChild("LumberJack") then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("9"):GetPivot().Position + Vector3.new(0, 5, 0))
 						end
