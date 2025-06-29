@@ -323,7 +323,11 @@ do
                     amount = 1
                 }
             }
+            local abilityArgs = {
+                "lunarSpell"
+            }
             replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(args))
+
             task.spawn(function()
                 while goto_closest do
                     local char = local_player.Character
@@ -420,9 +424,10 @@ do
                                 if dist < 10 then
                                     if mob.Name == "Maneater" then
                                         task.wait(0.1)
-                                        local VirtualInputManager = game:GetService("VirtualInputManager")
-                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                                        -- local VirtualInputManager = game:GetService("VirtualInputManager")
+                                        -- VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                                        -- VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack(abilityArgs))
                                     else
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
