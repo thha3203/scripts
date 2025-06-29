@@ -378,6 +378,9 @@ do
                                 mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
                             end
                             local target_position = mob_position + mob_look_vector * -8
+                            if mob.Name == "Atticus" then
+                                target_position = mob_position + mob_look_vector
+                            end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
                             local total_distance = (mob_position - hrp.Position).Magnitude
@@ -402,6 +405,7 @@ do
                                 print(dist)
                                 if dist < 10 then
                                     if mob.Name == "Maneater" then
+                                        task.wait(0.1)
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
