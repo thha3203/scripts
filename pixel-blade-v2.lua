@@ -156,6 +156,7 @@ end
 
 -- Get appropriate resting wave based on difficulty
 local function GetRestingWave()
+    task.wait(2)
     local difficulty = Workspace.difficulty.Value
     local waveTargets = {
         Normal = Workspace:FindFirstChild("7"),
