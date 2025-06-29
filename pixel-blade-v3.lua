@@ -371,8 +371,8 @@ do
                             local mob_position = nil
                             local mob_look_vector = nil
                             if mob.Name == "Maneater" then
-                                mob_position = mob.RootPart.Position
-                                mob_look_vector = mob.RootPart.CFrame.LookVector
+                                mob_position = mob.Root.Position
+                                mob_look_vector = mob.Root.CFrame.LookVector
                             else
                                 mob_position = mob.HumanoidRootPart.Position
                                 mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
