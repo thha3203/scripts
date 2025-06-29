@@ -401,10 +401,15 @@ do
                                 local dist = (mob_position - hrp.Position).Magnitude
                                 print(dist)
                                 if dist < 10 then
-                                    replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                                    replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+                                    if mob.Name == "Maneater" then
+                                        local VirtualInputManager = game:GetService("VirtualInputManager")
+                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                                    else
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+                                    end
                                 else
-                                    -- local target_position = mob_position + mob:GetPivot().LookVector * -8
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
