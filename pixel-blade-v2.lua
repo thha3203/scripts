@@ -227,6 +227,9 @@ function Features.Farming.init(tab, options, shared)
 	end
 
 	local function closest_mob()
+		local character = local_player.Character
+		if not character then return nil end
+
 		local priority_keywords = { "Archer", "Mage" }
 		local closest_priority_mob = nil
 		local closest_priority_distance = math.huge
@@ -236,8 +239,8 @@ function Features.Farming.init(tab, options, shared)
 
 		for _, v in next, workspace:GetChildren() do
 			local has_hadEntrance = v:GetAttribute("hadEntrance") ~= nil
-			if v ~= local_player.Character and v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and has_hadEntrance then
-				local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
+			if v ~= character and v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and has_hadEntrance then
+				local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
 				local name = v.Name
 				local hum = v:FindFirstChild("HumanoidRootPart")
 				if hum then hum.Anchored = true end
@@ -263,6 +266,8 @@ function Features.Farming.init(tab, options, shared)
 
 	local goto_closest = false
 	local transdelay = 2
+	local farmingConnection = nil
+	local shouldZeroVelocity = false
 
 	local autoFarmToggle = tab:AddToggle("AutoFarm", {
 		Title = "Auto Farm (Kill Aura)",
@@ -272,6 +277,14 @@ function Features.Farming.init(tab, options, shared)
 	autoFarmToggle:OnChanged(function(value)
 		goto_closest = value
 		if value then
+			shouldZeroVelocity = false
+			farmingConnection = run_service.Heartbeat:Connect(function()
+				if shouldZeroVelocity and local_player.Character and local_player.Character:FindFirstChild("HumanoidRootPart") then
+					local_player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+					local_player.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+				end
+			end)
+
 			local args = {{ char = LocalPlayer.Character, name = "tempbuff", statBoosts = { Dmg = "550000000%", BaseSpeed = "45%" }, dur = 50000000 }}
 			local healArgs = {{ char = LocalPlayer.Character, name = "heal", amount = 1 }}
 			replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(args))
@@ -283,53 +296,54 @@ function Features.Farming.init(tab, options, shared)
 						for _, part in ipairs(char:GetDescendants()) do
 							if part:IsA("BasePart") then part.CanCollide = false end
 						end
-					end
 					
-					if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("6") and workspace:FindFirstChild("7") and not workspace:FindFirstChild("LumberJack") then
-						task.wait(2)
-						char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("7"):GetPivot().Position + Vector3.new(0, 5, 0))
-					elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("7") and workspace:FindFirstChild("8") and not workspace:FindFirstChild("LumberJack") then
-						task.wait(2)
-						char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("8"):GetPivot().Position + Vector3.new(0, 5, 0))
-					elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("8") and workspace:FindFirstChild("9") and not workspace:FindFirstChild("LumberJack") then
-						task.wait(2)
-						char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("9"):GetPivot().Position + Vector3.new(0, 5, 0))
-					end
+						if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("6") and workspace:FindFirstChild("7") and not workspace:FindFirstChild("LumberJack") then
+							task.wait(2)
+							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("7"):GetPivot().Position + Vector3.new(0, 5, 0))
+						elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("7") and workspace:FindFirstChild("8") and not workspace:FindFirstChild("LumberJack") then
+							task.wait(2)
+							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("8"):GetPivot().Position + Vector3.new(0, 5, 0))
+						elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("8") and workspace:FindFirstChild("9") and not workspace:FindFirstChild("LumberJack") then
+							task.wait(2)
+							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("9"):GetPivot().Position + Vector3.new(0, 5, 0))
+						end
 
-					local cutscene = workspace:FindFirstChild("inCutscene")
-					local mob = closest_mob()
+						local cutscene = workspace:FindFirstChild("inCutscene")
+						local mob = closest_mob()
 
-					if cutscene and cutscene.Value == false and mob then
-						local hrp = char and char:FindFirstChild("HumanoidRootPart")
-						local velocity_connection = run_service.Heartbeat:Connect(function()
-							if local_player.Character and local_player.Character:FindFirstChild("HumanoidRootPart") then
-								local_player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
-								local_player.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
-							end
-						end)
-						if hrp then
-							local mob_position = mob.HumanoidRootPart.Position
-							local total_distance = (mob_position - hrp.Position).Magnitude
-							if total_distance > 70 then task.wait(transdelay) end
+						if cutscene and cutscene.Value == false and mob then
+							local hrp = char:FindFirstChild("HumanoidRootPart")
+							if hrp then
+								local mob_position = mob.HumanoidRootPart.Position
+								local total_distance = (mob_position - hrp.Position).Magnitude
+								if total_distance > 70 then task.wait(transdelay) end
 
-							while mob and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and goto_closest do
-								mob_position = mob.HumanoidRootPart.Position
-								if (mob_position - hrp.Position).Magnitude < 10 then
-									replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-									replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
-								else
-									local target_position = mob_position + mob:GetPivot().LookVector * -8
-									hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+								shouldZeroVelocity = true 
+								while mob and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and goto_closest do
+									mob_position = mob.HumanoidRootPart.Position
+									if (mob_position - hrp.Position).Magnitude < 10 then
+										replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+									else
+										local target_position = mob_position + mob:GetPivot().LookVector * -8
+										hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+									end
+									task.wait(0.5)
+									replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
 								end
-								task.wait(0.5)
-								replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
+								shouldZeroVelocity = false
 							end
 						end
-						if velocity_connection then velocity_connection:Disconnect() end
 					end
 					task.wait(0.1)
 				end
 			end)
+		else
+			if farmingConnection then
+				farmingConnection:Disconnect()
+				farmingConnection = nil
+			end
+			shouldZeroVelocity = false
 		end
 	end)
 
