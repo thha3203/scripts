@@ -377,6 +377,7 @@ function Features.Farming.init(tab, options, shared)
 									mob_position = mob:GetPivot().Position
 									print(mob.Name)
 									if (mob_position - hrp.Position).Magnitude < 10 then
+										print("Within 10" .. mob.Name)
 										replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
 										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob_targetable_part, current_damage(), {}, 0)
 									else
