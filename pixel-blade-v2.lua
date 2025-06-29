@@ -369,7 +369,7 @@ function Features.Farming.init(tab, options, shared)
 							if hrp then
 								local mob_position = mob:GetPivot().Position
 								local total_distance = (mob_position - hrp.Position).Magnitude
-								if total_distance > 70 then task.wait(transdelay) end
+								if total_distance > 70 then task.wait(5) end
 
 								shouldZeroVelocity = true 
 								local mob_targetable_part = get_mob_targetable_object(mob)
@@ -381,7 +381,9 @@ function Features.Farming.init(tab, options, shared)
 									else
 										local target_position = mob_position + mob:GetPivot().LookVector * -8
 										if mob:FindFirstChild("worm") then
-											target_position = Vector3.new(target_position.X, 0, target_position.Z)
+											target_position = Vector3.new(target_position.X, 10, target_position.Z)
+										else
+											target_position = target_position + Vector3.new(0, 1, 0)
 										end
 										hrp.CFrame = CFrame.lookAt(target_position, mob_position)
 									end
