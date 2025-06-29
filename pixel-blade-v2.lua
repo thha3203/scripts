@@ -375,13 +375,14 @@ function Features.Farming.init(tab, options, shared)
 								local mob_targetable_part = get_mob_targetable_object(mob)
 								while mob and mob_targetable_part and is_mob_alive(mob) and goto_closest do
 									mob_position = mob:GetPivot().Position
+									print(mob.Name)
 									if (mob_position - hrp.Position).Magnitude < 10 then
 										replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
 										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob_targetable_part, current_damage(), {}, 0)
 									else
 										local target_position = mob_position + mob:GetPivot().LookVector * -8
 										if mob:FindFirstChild("worm") then
-											target_position = Vector3.new(target_position.X, 20, target_position.Z)
+											target_position = Vector3.new(target_position.X, 30, target_position.Z)
 										else
 											target_position = target_position + Vector3.new(0, 1, 0)
 										end
