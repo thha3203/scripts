@@ -274,7 +274,7 @@ function Features.Farming.init(tab, options, shared)
 					local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
 					local name = v.Name
 					local hum = v:FindFirstChild("HumanoidRootPart")
-					if hum then hum.Anchored = true end
+					-- if hum then hum.Anchored = true end
 					
 					local is_priority_target = false
 					for _, keyword in ipairs(priority_keywords) do
@@ -381,7 +381,7 @@ function Features.Farming.init(tab, options, shared)
 									else
 										local target_position = mob_position + mob:GetPivot().LookVector * -8
 										if mob:FindFirstChild("worm") then
-											target_position = Vector3.new(target_position.X, 10, target_position.Z)
+											target_position = Vector3.new(target_position.X, 20, target_position.Z)
 										else
 											target_position = target_position + Vector3.new(0, 1, 0)
 										end
