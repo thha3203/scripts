@@ -370,6 +370,8 @@ do
                         end)
                         if hrp then
                             if mob.Name == "Atticus" and not entered_bossroom then
+                                hrp.CFrame = CFrame.lookAt(mob.HumanoidRootPart.Position + mob.HumanoidRootPart.CFrame.LookVector, mob.HumanoidRootPart.Position)
+                                task.wait(5)
                                 local room_position = workspace:FindFirstChild("Vault"):GetPivot().Position
                                 hrp.CFrame = CFrame.new(room_position)
                                 entered_bossroom = true
