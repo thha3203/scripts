@@ -405,12 +405,14 @@ do
 
                                 local dist = (mob_position - hrp.Position).Magnitude
                                 if dist < 10 then
-                                    if mob.Name == "Maneater" or mob.Name == "Atticus" then
+                                    if mob.Name == "Maneater" then
                                         task.wait(0.1)
-                                        -- local VirtualInputManager = game:GetService("VirtualInputManager")
-                                        -- VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                                        -- VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack(abilityArgs))
+                                    elseif mob.Name == "Atticus" then
+                                        task.wait(0.1)
+                                        local VirtualInputManager = game:GetService("VirtualInputManager")
+                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                                     else
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
