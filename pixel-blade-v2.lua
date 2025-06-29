@@ -255,8 +255,10 @@ function Features.Farming.init(tab, options, shared)
 		local priority_keywords = { "Archer", "Mage" }
 		local closest_priority_mob = nil
 		local closest_priority_distance = math.huge
-		local closest_mob = nil
-		local closest_distance = math.huge
+		local closest_regular_mob = nil
+		local closest_regular_distance = math.huge
+		local maneater_boss = nil
+		local maneater_distance = math.huge
 		local max_priority_distance = 80
 		
 		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
@@ -264,24 +266,21 @@ function Features.Farming.init(tab, options, shared)
 		for _, v in next, workspace:GetChildren() do
 			local has_hadEntrance = v:GetAttribute("hadEntrance") ~= nil
 			if v ~= character and v:IsA("Model") and has_hadEntrance then
+				
 				local is_regular_mob = v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0
 				local is_maneater_boss = is_ancient_sands and v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0
 				
-				if is_regular_mob or is_maneater_boss then
+				if is_regular_mob then
 					local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
 					local name = v.Name
 					local hum = v:FindFirstChild("HumanoidRootPart")
 					if hum then hum.Anchored = true end
-
+					
 					local is_priority_target = false
-					if is_maneater_boss then
-						is_priority_target = true
-					else
-						for _, keyword in ipairs(priority_keywords) do
-							if string.find(name, keyword) and dist <= max_priority_distance then
-								is_priority_target = true
-								break
-							end
+					for _, keyword in ipairs(priority_keywords) do
+						if string.find(name, keyword) and dist <= max_priority_distance then
+							is_priority_target = true
+							break
 						end
 					end
 					
@@ -291,15 +290,22 @@ function Features.Farming.init(tab, options, shared)
 							closest_priority_mob = v
 						end
 					else
-						if dist < closest_distance then
-							closest_distance = dist
-							closest_mob = v
+						if dist < closest_regular_distance then
+							closest_regular_distance = dist
+							closest_regular_mob = v
 						end
+					end
+				elseif is_maneater_boss then
+					local dist = (v:GetPivot().Position - character:GetPivot().Position).Magnitude
+					if dist < maneater_distance then
+						maneater_distance = dist
+						maneater_boss = v
 					end
 				end
 			end
 		end
-		return closest_priority_mob or closest_mob
+		
+		return closest_priority_mob or closest_regular_mob or maneater_boss
 	end
 
 	local goto_closest = false
@@ -335,13 +341,22 @@ function Features.Farming.init(tab, options, shared)
 							if part:IsA("BasePart") then part.CanCollide = false end
 						end
 					
-						if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("7") and not workspace:FindFirstChild("LumberJack") then
+						local function should_teleport_to_safe_zone()
+							local world_type = workspace:FindFirstChild("worldType") and workspace.worldType.Value
+							if world_type == "AncientSands" then
+								return not workspace:FindFirstChild("Maneater")
+							else -- Default for Grasslands
+								return not workspace:FindFirstChild("LumberJack")
+							end
+						end
+
+						if workspace.difficulty.Value == "Normal" and workspace:FindFirstChild("7") and should_teleport_to_safe_zone() then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("7"):GetPivot().Position + Vector3.new(0, 5, 0))
-						elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("8") and not workspace:FindFirstChild("LumberJack") then
+						elseif workspace.difficulty.Value == "Heroic" and workspace:FindFirstChild("8") and should_teleport_to_safe_zone() then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("8"):GetPivot().Position + Vector3.new(0, 5, 0))
-						elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("9") and not workspace:FindFirstChild("LumberJack") then
+						elseif workspace.difficulty.Value == "Nightmare" and workspace:FindFirstChild("9") and should_teleport_to_safe_zone() then
 							task.wait(2)
 							char.HumanoidRootPart.CFrame = CFrame.new(workspace:FindFirstChild("9"):GetPivot().Position + Vector3.new(0, 5, 0))
 						end
