@@ -377,10 +377,11 @@ do
                                 mob_position = mob.HumanoidRootPart.Position
                                 mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
                             end
-                            local target_position = mob_position + mob_look_vector * -8
+
                             if mob.Name == "Atticus" then
-                                target_position = mob_position + mob_look_vector
+                                print("Atticus", mob_position.X, mob_position.Y, mob_position.Z)
                             end
+                            local target_position = mob_position + mob_look_vector * -8
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
                             local total_distance = (mob_position - hrp.Position).Magnitude
