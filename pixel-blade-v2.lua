@@ -296,7 +296,10 @@ local function KillAuraAutoFarm()
                 DisableCollision(character)
             end
             
-            TeleportToRestingWave()
+            if GetRestingWave() then
+                TeleportToRestingWave()
+                task.wait(TransitionDelay)
+            end
 
             -- Auto Farm + Kill Aura logic
             local cutscene = Workspace:FindFirstChild("inCutscene")
