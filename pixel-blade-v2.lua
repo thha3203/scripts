@@ -380,6 +380,9 @@ function Features.Farming.init(tab, options, shared)
 										replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob_targetable_part, current_damage(), {}, 0)
 									else
 										local target_position = mob_position + mob:GetPivot().LookVector * -8
+										if mob:FindFirstChild("worm") then
+											target_position = Vector3.new(target_position.X, 0, target_position.Z)
+										end
 										hrp.CFrame = CFrame.lookAt(target_position, mob_position)
 									end
 									task.wait(0.5)
