@@ -293,6 +293,7 @@ do
 
 -- Auto Farm toggle
     local goto_closest = false
+    local entered_bossroom = false
     local transdelay = 2
 
     local Toggle3 = Tabs.Main:AddToggle("AutoFarm", {
@@ -368,6 +369,13 @@ do
                             end
                         end)
                         if hrp then
+                            if mob.Name == "Atticus" and not entered_bossroom then
+                                local room_position = workspace:FindFirstChild("Vault"):GetPivot().Position
+                                hrp.CFrame = CFrame.new(room_position)
+                                entered_bossroom = true
+                                task.wait(1)
+                            end
+
                             local mob_position = nil
                             local mob_look_vector = nil
                             if mob.Name == "Maneater" then
@@ -378,9 +386,7 @@ do
                                 mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
                             end
 
-                            if mob.Name == "Atticus" then
-                                print("Atticus", mob_position.X, mob_position.Y, mob_position.Z)
-                            end
+
                             local target_position = mob_position + mob_look_vector * -8
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
