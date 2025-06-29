@@ -189,7 +189,7 @@ local function TeleportToRestingWave()
         canTeleport = wave8 and wave9
     end
     
-    if target and canTeleport and not lumberjack and target:IsA("Model") then
+    if target and canTeleport and not lumberjack then
         local success, result = pcall(function()
             local position = target:GetPivot().Position + Vector3.new(0, 5, 0)
             character.HumanoidRootPart.CFrame = CFrame.new(position)
@@ -496,6 +496,7 @@ KillAuraToggle:OnChanged(function(Value)
         ApplyDamageBuff("550000000%", "45%", 50000000)
         KillAuraAutoFarm()
     end
+    wait(2)
 end)
 
 Tabs.Farm:AddSection("Farm Settings")
