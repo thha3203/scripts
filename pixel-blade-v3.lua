@@ -266,6 +266,28 @@ do
 
         return closest_priority_mob or closest_mob
     end
+    
+    local function get_mob_targetable_object(mob)
+		if not mob then return nil end
+		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
+		if is_ancient_sands and mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") then
+			return mob.worm
+		elseif mob:FindFirstChild("Humanoid") then
+			return mob.Humanoid
+		end
+		return nil
+	end
+
+    local function is_mob_alive(mob)
+		if not mob then return false end
+		local is_ancient_sands = workspace:FindFirstChild("worldType") and workspace.worldType.Value == "AncientSands"
+		if is_ancient_sands and mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") then
+			return mob.worm.Health.Value > 0
+		elseif mob:FindFirstChild("Humanoid") then
+			return mob.Humanoid.Health > 0
+		end
+		return false
+	end
 
 
 -- Auto Farm toggle
@@ -345,8 +367,15 @@ do
                             end
                         end)
                         if hrp then
-                            local mob_position = mob.HumanoidRootPart.Position
-                            local mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
+                            local mob_position = nil
+                            local mob_look_vector = nil
+                            if mob.Name == "Maneater" then
+                                mob_position = mob.RootPart.Position
+                                mob_look_vector = mob.RootPart.CFrame.LookVector
+                            else
+                                mob_position = mob.HumanoidRootPart.Position
+                                mob_look_vector = mob.HumanoidRootPart.CFrame.LookVector
+                            end
                             local target_position = mob_position + mob_look_vector * -8
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
@@ -356,20 +385,26 @@ do
                             end
 
                             -- Engage in combat
-                            while mob do
-                                if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and goto_closest then
+                            local mob_targetable_part = get_mob_targetable_object(mob)
+                            while mob 
+                                and mob_targetable_part
+                                and is_mob_alive(mob)
+                                and goto_closest
+                            do
+                                if mob.Name == "Maneater" then
+                                    mob_position = mob.RootPart.Position
+                                else
                                     mob_position = mob.HumanoidRootPart.Position
-                                    local dist = (mob_position - hrp.Position).Magnitude
-                                    if dist < 10 then
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
-                                    else
-                                        local target_position = mob_position + mob:GetPivot().LookVector * -8
-                                        hrp.CFrame = CFrame.lookAt(target_position, mob_position)
-                                    end
                                 end
-                                if mob:FindFirstChild("worm") and mob.worm:FindFirstChild("Health") and mob.worm.Health.Value > 0 then
-                                    print(mob.Name)
+
+                                local dist = (mob_position - hrp.Position).Magnitude
+                                print(dist)
+                                if dist < 10 then
+                                    replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+                                    replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+                                else
+                                    local target_position = mob_position + mob:GetPivot().LookVector * -8
+                                    hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
                                 replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
