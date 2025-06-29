@@ -257,6 +257,7 @@ do
                     closest_mob = v
                 end
             elseif v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0 then
+                local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
                 if dist < closest_distance then
                     closest_distance = dist
                     closest_mob = v
@@ -403,7 +404,7 @@ do
                                     replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
                                     replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
                                 else
-                                    local target_position = mob_position + mob:GetPivot().LookVector * -8
+                                    -- local target_position = mob_position + mob:GetPivot().LookVector * -8
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
