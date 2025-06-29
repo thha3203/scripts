@@ -403,7 +403,6 @@ do
                                 end
 
                                 local dist = (mob_position - hrp.Position).Magnitude
-                                print(dist)
                                 if dist < 10 then
                                     if mob.Name == "Maneater" then
                                         task.wait(0.1)
