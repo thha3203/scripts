@@ -213,7 +213,7 @@ do
 
     -- Closest mob finder
     local function closest_mob()
-        local priority_keywords = { "Archer", "Mage" }
+        -- local priority_keywords = { "Archer", "Mage" }
         local closest_priority_mob = nil
         local closest_priority_distance = math.huge
 
@@ -240,18 +240,23 @@ do
                     hum.Anchored = true
                 end
 
-                -- Prioritize Archer/Mage ONLY if within 80 studs
-                for _, keyword in ipairs(priority_keywords) do
-                    if string.find(name, keyword) and dist <= max_priority_distance then
-                        if dist < closest_priority_distance then
-                            closest_priority_distance = dist
-                            closest_priority_mob = v
-                        end
-                        break
-                    end
-                end
+                -- -- Prioritize Archer/Mage ONLY if within 80 studs
+                -- for _, keyword in ipairs(priority_keywords) do
+                --     if string.find(name, keyword) and dist <= max_priority_distance then
+                --         if dist < closest_priority_distance then
+                --             closest_priority_distance = dist
+                --             closest_priority_mob = v
+                --         end
+                --         break
+                --     end
+                -- end
 
                 -- Always consider closest mob (any type)
+                if dist < closest_distance then
+                    closest_distance = dist
+                    closest_mob = v
+                end
+            elseif v:FindFirstChild("worm") and v.worm:FindFirstChild("Health") and v.worm.Health.Value > 0 then
                 if dist < closest_distance then
                     closest_distance = dist
                     closest_mob = v
@@ -351,10 +356,7 @@ do
                             end
 
                             -- Engage in combat
-                            while mob 
-                                and mob:FindFirstChild("Humanoid") 
-                                and mob.Humanoid.Health > 0 
-                                and goto_closest
+                            while mob and ((mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0) or (mob:FindFirstChild("worm") and mob.worm.Health.Value > 0)) and goto_closest
                             do
                                 mob_position = mob.HumanoidRootPart.Position
                                 local dist = (mob_position - hrp.Position).Magnitude
