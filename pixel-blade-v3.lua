@@ -213,7 +213,6 @@ do
 
     -- Closest mob finder
     local function closest_mob()
-        -- local priority_keywords = { "Archer", "Mage" }
         local closest_priority_mob = nil
         local closest_priority_distance = math.huge
 
@@ -239,17 +238,6 @@ do
                 if hum then
                     hum.Anchored = true
                 end
-
-                -- -- Prioritize Archer/Mage ONLY if within 80 studs
-                -- for _, keyword in ipairs(priority_keywords) do
-                --     if string.find(name, keyword) and dist <= max_priority_distance then
-                --         if dist < closest_priority_distance then
-                --             closest_priority_distance = dist
-                --             closest_priority_mob = v
-                --         end
-                --         break
-                --     end
-                -- end
 
                 -- Always consider closest mob (any type)
                 if dist < closest_distance then
@@ -343,17 +331,15 @@ do
                     local seven = workspace:FindFirstChild("7")
                     local eight = workspace:FindFirstChild("8")
                     local nine = workspace:FindFirstChild("9")
-                    local kingslayer = workspace:FindFirstChild("LumberJack")
-                    local twenty = workspace:FindFirstChild("20")
-                    local bossroom = workspace:FindFirstChild("BossRoom")
+                    -- local kingslayer = workspace:FindFirstChild("LumberJack")
 
-                    if workspace.difficulty.Value == "Normal" and six and seven and not kingslayer then
+                    if workspace.difficulty.Value == "Normal" and six and seven then
                         task.wait(2)
                         char.HumanoidRootPart.CFrame = CFrame.new(seven:GetPivot().Position + Vector3.new(0, 5, 0))
-                    elseif workspace.difficulty.Value == "Heroic" and seven and eight and not kingslayer then
+                    elseif workspace.difficulty.Value == "Heroic" and seven and eight then
                         task.wait(2)
                         char.HumanoidRootPart.CFrame = CFrame.new(eight:GetPivot().Position + Vector3.new(0, 5, 0))
-                    elseif workspace.difficulty.Value == "Nightmare" and eight and nine and not kingslayer then
+                    elseif workspace.difficulty.Value == "Nightmare" and eight and nine then
                         task.wait(2)
                         char.HumanoidRootPart.CFrame = CFrame.new(nine:GetPivot().Position + Vector3.new(0, 5, 0))
                     end
@@ -385,7 +371,7 @@ do
                             local mob_position = nil
                             local mob_look_vector = nil
                             if mob.Name == "Maneater" then
-                                mob_position = mob.Root.Position
+                                mob_position = Vector3.new(mob.Root.Position.X, 35, mob.Root.Position.Z)
                                 mob_look_vector = mob.Root.CFrame.LookVector
                             else
                                 mob_position = mob.HumanoidRootPart.Position
@@ -396,9 +382,6 @@ do
                             local target_position = mob_position + mob_look_vector * -8
                             if mob.Name == "Nekros" then
                                 target_position = mob_position + mob_look_vector
-                            end
-                            if mob.Name == "Maneater" and entered_bossroom then
-                                target_position = Vector3.new(mob_position.X, 35, mob_position.Z)
                             end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
@@ -415,7 +398,7 @@ do
                                 and goto_closest
                             do
                                 if mob.Name == "Maneater" then
-                                    mob_position = mob.Root.Position
+                                    mob_position = Vector3.new(mob.Root.Position.X, 35, mob.Root.Position.Z)
                                 else
                                     mob_position = mob.HumanoidRootPart.Position
                                 end
