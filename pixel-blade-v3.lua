@@ -393,6 +393,9 @@ do
                             if mob.Name == "Nekros" then
                                 target_position = mob_position + mob_look_vector
                             end
+                            if mob.Name == "Maneater" and entered_bossroom then
+                                target_position = Vector3.new(mob_position.X, 35, mob_position.Z)
+                            end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
                             local total_distance = (mob_position - hrp.Position).Magnitude
