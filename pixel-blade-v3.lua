@@ -393,7 +393,7 @@ do
                                 and goto_closest
                             do
                                 if mob.Name == "Maneater" then
-                                    mob_position = mob.RootPart.Position
+                                    mob_position = mob.Root.Position
                                 else
                                     mob_position = mob.HumanoidRootPart.Position
                                 end
