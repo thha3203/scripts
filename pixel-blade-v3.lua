@@ -405,7 +405,7 @@ do
 
                                 local dist = (mob_position - hrp.Position).Magnitude
                                 if dist < 10 then
-                                    if mob.Name == "Maneater" then
+                                    if mob.Name == "Maneater" or mob.Name == "Atticus" then
                                         task.wait(0.1)
                                         -- local VirtualInputManager = game:GetService("VirtualInputManager")
                                         -- VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
