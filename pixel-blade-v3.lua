@@ -423,7 +423,7 @@ do
                                     --     local VirtualInputManager = game:GetService("VirtualInputManager")
                                     --     task.wait(0.5)
                                     --     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                                    --     task.wait(0.1)
+                                    --     task.wait(0.05)
                                     --     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                                     --     task.wait(0.1)
                                     -- end
