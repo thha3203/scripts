@@ -512,6 +512,20 @@ do
     
     Options.autoopenchest:SetValue(false)
 
+    local autoOpenWish = Tabs.Main:AddToggle("autoOpenWish", {Title = "Open All Wishes", Default = false })
+    autoOpenWish:OnChanged(function()
+        while Options.autoOpenWish.Value do
+            local wishesText = game:GetService("Players").LocalPlayer.PlayerGui.gameUI.shop.Wishes.remainingWishes.Text
+            local wishesCount = tonumber(string.match(wishesText, "%d+"))
+
+            for i = 1, wishesCount do
+                replicated_storage:WaitForChild("remotes"):WaitForChild("openWish"):InvokeServer()
+                task.wait(0.1)
+            end
+        end
+    end)
+    Options.autoOpenWish:SetValue(false)
+
     local selected_dungeon = "Grasslands"
     local dungeons = Tabs.Portal:AddDropdown("dungeons", {
         Title = "Select Portal",
