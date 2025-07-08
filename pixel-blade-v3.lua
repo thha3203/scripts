@@ -380,7 +380,7 @@ do
 
 
                             local target_position = mob_position + mob_look_vector * -8
-                            if mob.Name == "Nekros" then
+                            if mob.Name == "Nekros" or mob.Name == "DarkNekros" then
                                 target_position = mob_position + mob_look_vector * 2
                             end
                             
