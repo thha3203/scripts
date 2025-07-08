@@ -336,6 +336,7 @@ do
                     amount = 1
                 }
             }
+            -- buff damage
             replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(buffArgs))
 
             task.spawn(function()
