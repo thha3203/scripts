@@ -384,9 +384,9 @@ do
                                 target_position = mob_position - mob_look_vector
                                 task.wait(0.5)
                                 local VirtualInputManager = game:GetService("VirtualInputManager")
-                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                 task.wait(0.1)
-                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                             end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
