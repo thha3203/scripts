@@ -383,7 +383,6 @@ do
                             if mob.Name == "Nekros" then
                                 target_position = mob_position - mob_look_vector
                             end
-                            local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
                             local total_distance = (mob_position - hrp.Position).Magnitude
                             if total_distance > 70 then
@@ -417,10 +416,6 @@ do
                                         -- Send virtual input to press the Q key
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         task.wait(0.5)
-                                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                                        task.wait(0.1)
-                                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
-                                        task.wait(0.1)
                                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                         task.wait(0.1)
                                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
