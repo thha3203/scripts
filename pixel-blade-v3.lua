@@ -381,8 +381,9 @@ do
 
                             local target_position = mob_position + mob_look_vector * -8
                             if mob.Name == "Nekros" then
-                                target_position = mob_position - mob_look_vector
+                                target_position = mob_position - mob_look_vector    
                                 task.wait(0.5)
+                                -- Send virtual input to press the Q key
                                 local VirtualInputManager = game:GetService("VirtualInputManager")
                                 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                 task.wait(0.1)
