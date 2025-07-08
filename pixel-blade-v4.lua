@@ -291,18 +291,14 @@ do
 
     local function attack_boss(mob)
         if mob.Name == "Atticus" then
-            while is_mob_alive(mob) do
-                task.wait(0.1)
-                local VirtualInputManager = game:GetService("VirtualInputManager")
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-            end
+            task.wait(0.1)
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
         end
         if mob.Name == "Maneater" then
-            while is_mob_alive(mob) do
-                task.wait(0.1)
-                replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack({"lunarSpell"}))
-            end
+            task.wait(0.1)
+            replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack({"lunarSpell"}))
         end
     end
 
@@ -340,9 +336,6 @@ do
                     amount = 1
                 }
             }
-            -- local abilityArgs = {
-            --     "lunarSpell"
-            -- }
 
             task.spawn(function()
                 while goto_closest do
@@ -411,25 +404,25 @@ do
                                 target_position = mob_position + mob_look_vector * 2
                             end
 
-                            -- if mob and is alive then teleport to closest mob
-                            local mob_targetable_part = get_mob_targetable_object(mob)
-                            if mob 
-                                and mob_targetable_part
-                                and is_mob_alive(mob)
-                                and goto_closest
-                            then
-                                hrp.CFrame = CFrame.lookAt(target_position, mob_position)
-                                task.wait(0.1)
-                                -- if mob is boss then attack_boss() else mass kill
-                                if mob.Name == "Atticus" or mob.Name == "Maneater" then
-                                    attack_boss(mob)
-                                else
-                                    mass_kill()
-                                end
-                                task.wait(0.5)
-                                replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
-                                task.wait(1)
-                            end
+                            -- -- if mob and is alive then teleport to closest mob
+                            -- local mob_targetable_part = get_mob_targetable_object(mob)
+                            -- if mob 
+                            --     and mob_targetable_part
+                            --     and is_mob_alive(mob)
+                            --     and goto_closest
+                            -- then
+                            --     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+                            --     task.wait(0.1)
+                            --     -- if mob is boss then attack_boss() else mass kill
+                            --     if mob.Name == "Atticus" or mob.Name == "Maneater" then
+                            --         attack_boss(mob)
+                            --     else
+                            --         mass_kill()
+                            --     end
+                            --     task.wait(0.5)
+                            --     replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
+                            --     task.wait(1)
+                            -- end
 
                             -- -- then attack
                             -- local total_distance = (mob_position - hrp.Position).Magnitude
@@ -437,34 +430,26 @@ do
                             --     task.wait(transdelay)
                             -- end
 
-                            -- -- Engage in combat
-                            -- local mob_targetable_part = get_mob_targetable_object(mob)
-                            -- while mob 
-                            --     and mob_targetable_part
-                            --     and is_mob_alive(mob)
-                            --     and goto_closest
-                            -- do
-                            --     local dist = (mob_position - hrp.Position).Magnitude
-                            --     if dist < 10 then
-                            --         if mob.Name == "Maneater" then
-                            --             task.wait(0.1)
-                            --             replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack(abilityArgs))
-                            --         elseif mob.Name == "Atticus" then
-                            --             task.wait(0.1)
-                            --             local VirtualInputManager = game:GetService("VirtualInputManager")
-                            --             VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                            --             VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                            --         else
-                            --             mass_kill()
-                            --             -- replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                            --             -- replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
-                            --         end
-                            --     else
-                            --         hrp.CFrame = CFrame.lookAt(target_position, mob_position)
-                            --     end
-                            --     task.wait(0.5)
-                            --     replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
-                            -- end
+                            -- Engage in combat
+                            local mob_targetable_part = get_mob_targetable_object(mob)
+                            while mob 
+                                and mob_targetable_part
+                                and is_mob_alive(mob)
+                                and goto_closest
+                            do
+                                local dist = (mob_position - hrp.Position).Magnitude
+                                if dist < 10 then
+                                    if mob.Name == "Atticus" or mob.Name == "Maneater" then
+                                        attack_boss(mob)
+                                    else
+                                        mass_kill()
+                                        task.wait(1)
+                                    end
+                                else
+                                    hrp.CFrame = CFrame.lookAt(target_position, mob_position)
+                                end
+                                replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
+                            end
                         end
                         if velocity_connection then
                             velocity_connection:Disconnect()
