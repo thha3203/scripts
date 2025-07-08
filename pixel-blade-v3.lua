@@ -412,7 +412,12 @@ do
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                                    elseif mob.Name == "Nekros" then
+                                    else
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
+                                    end
+                                else
+                                    if mob.Name == "Nekros" then
                                         -- Send virtual input to press the Q key
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         task.wait(0.5)
@@ -420,13 +425,7 @@ do
                                         task.wait(0.1)
                                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                                         task.wait(0.1)
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
-                                    else
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
-                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
                                     end
-                                else
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
