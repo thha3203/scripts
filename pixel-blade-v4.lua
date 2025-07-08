@@ -1,4 +1,4 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/thha3203/scripts/refs/heads/main/pixel-blade-v3.lua"))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/thha3203/scripts/refs/heads/main/pixel-blade-v4.lua"))()
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
