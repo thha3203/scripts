@@ -418,15 +418,15 @@ do
                                     end
                                 else
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
-                                    if mob.Name == "Nekros" then
-                                        -- Send virtual input to press the Q key
-                                        local VirtualInputManager = game:GetService("VirtualInputManager")
-                                        task.wait(0.5)
-                                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                                        task.wait(0.1)
-                                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
-                                        task.wait(0.1)
-                                    end
+                                    -- if mob.Name == "Nekros" then
+                                    --     -- Send virtual input to press the Q key
+                                    --     local VirtualInputManager = game:GetService("VirtualInputManager")
+                                    --     task.wait(0.5)
+                                    --     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+                                    --     task.wait(0.1)
+                                    --     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+                                    --     task.wait(0.1)
+                                    -- end
                                 end
                                 task.wait(0.5)
                                 replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
