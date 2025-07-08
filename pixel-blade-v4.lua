@@ -318,7 +318,7 @@ do
     Toggle3:OnChanged(function(Value)
         goto_closest = Value
         if Value then
-            local args = {
+            local buffArgs = {
                 {
                     char = game:GetService("Players").LocalPlayer.Character,
                     name = "tempbuff",
@@ -336,6 +336,7 @@ do
                     amount = 1
                 }
             }
+            replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(buffArgs))
 
             task.spawn(function()
                 while goto_closest do
