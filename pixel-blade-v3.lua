@@ -417,6 +417,7 @@ do
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
                                     end
                                 else
+                                    hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                     if mob.Name == "Nekros" then
                                         -- Send virtual input to press the Q key
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
@@ -426,7 +427,6 @@ do
                                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                                         task.wait(0.1)
                                     end
-                                    hrp.CFrame = CFrame.lookAt(target_position, mob_position)
                                 end
                                 task.wait(0.5)
                                 replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(healArgs))
