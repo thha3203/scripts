@@ -281,8 +281,10 @@ do
     local function mass_kill()
         for _,v in workspace:GetChildren() do   
             if v:FindFirstChild("Humanoid") and v:GetAttribute("hadEntrance") and v:FindFirstChild("Health") then
-                replicated_storage.remotes.useAbility:FireServer("tornado")
-                replicated_storage.remotes.abilityHit:FireServer(v.Humanoid,math.huge,{["stun"] = {["dur"] = 1}})
+                if is_mob_alive(v) then
+                    replicated_storage.remotes.useAbility:FireServer("tornado")
+                    replicated_storage.remotes.abilityHit:FireServer(v.Humanoid,math.huge,{["stun"] = {["dur"] = 1}})
+                end
             end
         end
     end
@@ -291,7 +293,7 @@ do
 -- Auto Farm toggle
     local goto_closest = false
     local entered_bossroom = false
-    local transdelay = 2
+    local transdelay = 1.5
 
     local Toggle3 = Tabs.Main:AddToggle("AutoFarm", {
         Title = "Auto Farm (Kill Aura)",
@@ -407,7 +409,7 @@ do
                             do
                                 local dist = (mob_position - hrp.Position).Magnitude
                                 if dist < 10 then
-                                    if mob.Name == "Maneater" or mob.Name == "Nekros" or mob.Name == "DarkNekros" then
+                                    if mob.Name == "Maneater" then
                                         task.wait(0.1)
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("useAbility"):FireServer(unpack(abilityArgs))
                                     elseif mob.Name == "Atticus" then
