@@ -381,17 +381,7 @@ do
 
                             local target_position = mob_position + mob_look_vector * -8
                             if mob.Name == "Nekros" then
-                                target_position = mob_position - mob_look_vector    
-                                task.wait(1)
-                                -- Send virtual input to press the Q key
-                                local VirtualInputManager = game:GetService("VirtualInputManager")
-                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                                task.wait(0.1)
-                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
-                                task.wait(0.1)
-                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                                task.wait(0.1)
-                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+                                target_position = mob_position - mob_look_vector
                             end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
@@ -423,6 +413,12 @@ do
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                                    elseif mob.Name == "Nekros" then
+                                        task.wait(0.5)
+                                        local VirtualInputManager = game:GetService("VirtualInputManager")
+                                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+                                        task.wait(0.1)
+                                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                                     else
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
