@@ -414,12 +414,19 @@ do
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                                     elseif mob.Name == "Nekros" then
-                                        task.wait(0.5)
                                         -- Send virtual input to press the Q key
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
+                                        task.wait(0.5)
                                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                         task.wait(0.1)
                                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+                                        task.wait(0.1)
+                                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+                                        task.wait(0.1)
+                                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+                                        task.wait(0.1)
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
+                                        replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
                                     else
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("swing"):FireServer()
                                         replicated_storage:WaitForChild("remotes"):WaitForChild("onHit"):FireServer(mob.Humanoid, current_damage(), {}, 0)
