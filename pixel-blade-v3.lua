@@ -381,7 +381,7 @@ do
 
                             local target_position = mob_position + mob_look_vector * -8
                             if mob.Name == "Nekros" then
-                                target_position = mob_position + mob_look_vector
+                                target_position = mob_position - mob_look_vector * 8
                             end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
