@@ -415,6 +415,7 @@ do
                                         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                                     elseif mob.Name == "Nekros" then
                                         task.wait(0.5)
+                                        -- Send virtual input to press the Q key
                                         local VirtualInputManager = game:GetService("VirtualInputManager")
                                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                         task.wait(0.1)
