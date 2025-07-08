@@ -388,6 +388,10 @@ do
                                 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
                                 task.wait(0.1)
                                 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+                                task.wait(0.1)
+                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+                                task.wait(0.1)
+                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
                             end
                             local target_cframe = CFrame.lookAt(target_position, mob_position)
                             
