@@ -514,16 +514,13 @@ do
 
     local autoOpenWish = Tabs.Main:AddToggle("autoOpenWish", {Title = "Open All Wishes", Default = false })
     autoOpenWish:OnChanged(function()
-        while Options.autoOpenWish.Value do
-            -- get remaining wishes
-            local wishesText = game:GetService("Players").LocalPlayer.PlayerGui.gameUI.shop.Wishes.remainingWishes.Text
-            local wishesCount = tonumber(string.match(wishesText, "%d+"))
+        local wishesText = game:GetService("Players").LocalPlayer.PlayerGui.gameUI.shop.Wishes.remainingWishes.Text
+        local wishesCount = tonumber(string.match(wishesText, "%d+"))
 
-            -- open wishes
-            for i = 1, wishesCount do
-                replicated_storage:WaitForChild("remotes"):WaitForChild("openWish"):InvokeServer()
-                task.wait(0.5)
-            end
+        while Options.autoOpenWish.Value and wishesCount > 0 do
+            replicated_storage:WaitForChild("remotes"):WaitForChild("openWish"):InvokeServer()
+            task.wait(0.5)
+            wishesCount = wishesCount - 1
         end
     end)
     Options.autoOpenWish:SetValue(false)
