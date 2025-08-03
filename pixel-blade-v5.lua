@@ -514,8 +514,8 @@ do
                         end
                     end
 
-                    task.wait(2)
-                    char.HumanoidRootPart.CFrame = CFrame.new(raid_room_position)
+                    -- task.wait(2)
+                    -- char.HumanoidRootPart.CFrame = CFrame.new(raid_room_position)
 
                     -- Auto Farm + Kill Aura logic
                     local cutscene = workspace:FindFirstChild("inCutscene")
