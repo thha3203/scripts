@@ -514,6 +514,7 @@ do
                         end
                     end
 
+                    -- commented out for now
                     -- task.wait(2)
                     -- char.HumanoidRootPart.CFrame = CFrame.new(raid_room_position)
 
