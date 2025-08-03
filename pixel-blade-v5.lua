@@ -508,6 +508,8 @@ do
             -- buff damage
             replicated_storage:WaitForChild("remotes"):WaitForChild("abilityEvent"):FireServer(unpack(buffArgs))
 
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+
             task.spawn(function()
                 while goto_closest_raid do
                     local char = local_player.Character
@@ -552,7 +554,8 @@ do
                             do
                                 local dist = (mob_position - hrp.Position).Magnitude
                                 if dist < 10 then
-                                    mass_kill(true)
+                                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
                                     task.wait(1)
                                 else
                                     hrp.CFrame = CFrame.lookAt(target_position, mob_position)
