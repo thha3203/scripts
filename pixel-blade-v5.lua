@@ -244,9 +244,11 @@ do
                 end
 
                 -- OPTIONAL: Anchor the mob
-                local hum = v:FindFirstChild("HumanoidRootPart")
-                if hum then
-                    hum.Anchored = true
+                if not is_raid then
+                    local hum = v:FindFirstChild("HumanoidRootPart")
+                    if hum then
+                        hum.Anchored = true
+                    end
                 end
 
                 -- Always consider closest mob (any type)
