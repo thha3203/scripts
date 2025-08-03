@@ -200,6 +200,11 @@ do
 
     local player_stats = require(local_player:FindFirstChild("plrStats"))
 
+    local ignore_list = {
+        "ShroomKnight",
+        "blender"
+    }
+
     -- Damage function
     local function current_damage()
         local damage = 0
@@ -233,8 +238,8 @@ do
                 local dist = (v:GetPivot().Position - local_player.Character:GetPivot().Position).Magnitude
                 local name = v.Name
 
-                -- if name is ShroomKnight then skip
-                if v.Name == "ShroomKnight" then
+                -- if name is in ignore_list then skip
+                if table.find(ignore_list, name) then
                     continue
                 end
 
@@ -285,7 +290,7 @@ do
 
     local function mass_kill(is_raid)
         for _,v in workspace:GetChildren() do   
-            if v:FindFirstChild("Humanoid") and v.Name ~= "ShroomKnight" and (v:GetAttribute("hadEntrance") or is_raid) and v:FindFirstChild("Health") then
+            if v:FindFirstChild("Humanoid") and not table.find(ignore_list, v.Name) and (v:GetAttribute("hadEntrance") or is_raid) and v:FindFirstChild("Health") then
                 if is_mob_alive(v) then
                     replicated_storage.remotes.useAbility:FireServer("tornado")
                     replicated_storage.remotes.abilityHit:FireServer(v.Humanoid,math.huge,{["stun"] = {["dur"] = 1}})
